@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using UserManagement.Models;
 
@@ -31,6 +33,10 @@ public class DataContext : DbContext, IDataContext
 
     public IQueryable<TEntity> GetAll<TEntity>() where TEntity : class
         => base.Set<TEntity>();
+
+
+    public IQueryable<TEntity> GetListByFilter<TEntity>(Func<TEntity, bool> predicate) where TEntity : class
+     => base.Set<TEntity>().Where(predicate).AsQueryable();
 
     public void Create<TEntity>(TEntity entity) where TEntity : class
     {
