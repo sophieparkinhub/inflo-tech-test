@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
-using UserManagement.Models;
+using System.Threading;
+using System.Threading.Tasks;
+using UserManagement.Application.DTOs;
 
-namespace UserManagement.Services.Domain.Interfaces;
-
-public interface IUserService 
+namespace UserManagement.Services.Interfaces;
+public interface IUserService
 {
-    /// <summary>
-    /// Return users by active state
-    /// </summary>
-    /// <param name="isActive"></param>
-    /// <returns></returns>
-    IEnumerable<User> FilterByActive(bool isActive);
-    IEnumerable<User> GetAll();
+    Task Create(UserDto user, CancellationToken cancellationToken);
+    Task<bool> Delete(long id, CancellationToken cancellationToken);
+    Task<IEnumerable<UserDto>> FilterByActive(bool isActive, CancellationToken cancellationToken);
+    Task<IEnumerable<UserDto>> GetAll(CancellationToken cancellationToken);
+    Task<UserDto?> GetById(long id);
+    Task Update(UserDto user, CancellationToken cancellationToken);
 }

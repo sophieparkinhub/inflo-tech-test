@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace UserManagement.Web.Models.Users;
 
@@ -10,9 +11,16 @@ public class UserListViewModel
 public class UserListItemViewModel
 {
     public long Id { get; set; }
+    [Required(ErrorMessage = "Forename is required")]
     public string? Forename { get; set; }
+    [Required(ErrorMessage = "Surname is required")]
     public string? Surname { get; set; }
+    [Required(ErrorMessage = "Email is required")]
     public string? Email { get; set; }
-    public DateOnly DateOfBirth { get; set; }
+    [Required(ErrorMessage = "Date of Birth is required")]
+    [Display(Name = "Date of Birth")]
+    [DataType(DataType.Date)]
+    public DateTime? DateOfBirth { get; set; }
+    [Display(Name = "Is Active")]
     public bool IsActive { get; set; }
 }

@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using UserManagement.Application.Extensions;
+using UserManagement.Infrastructure.Extensions;
 using Westwind.AspNetCore.Markdown;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services
     .AddDataAccess()
+    .AddInfrastructureLayer()
+    .AddApplicationLayer()
     .AddDomainServices()
     .AddMarkdown()
     .AddControllersWithViews();

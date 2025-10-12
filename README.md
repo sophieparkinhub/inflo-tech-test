@@ -15,22 +15,22 @@ Complete as many of the tasks below as you feel comfortable with. These are spli
 ### 1. Filters Section (Standard)
 
 The users page contains 3 buttons below the user listing - **Show All**, **Active Only** and **Non Active**. Show All has already been implemented. Implement the remaining buttons using the following logic:
-* Active Only – This should show only users where their `IsActive` property is set to `true`
-* Non Active – This should show only users where their `IsActive` property is set to `false`
+* Active Only – This should show only users where their `IsActive` property is set to `true` :white_check_mark:
+* Non Active – This should show only users where their `IsActive` property is set to `false` :white_check_mark:
 
 ### 2. User Model Properties (Standard)
 
-Add a new property to the `User` class in the system called `DateOfBirth` which is to be used and displayed in relevant sections of the app.
+Add a new property to the `User` class in the system called `DateOfBirth` which is to be used and displayed in relevant sections of the app. :white_check_mark:
 
 ### 3. Actions Section (Standard)
 
 Create the code and UI flows for the following actions
-* **Add** – A screen that allows you to create a new user and return to the list
-* **View** - A screen that displays the information about a user
-* **Edit** – A screen that allows you to edit a selected user from the list  
-* **Delete** – A screen that allows you to delete a selected user from the list
+* **Add** – A screen that allows you to create a new user and return to the list :white_check_mark:
+* **View** - A screen that displays the information about a user :white_check_mark:
+* **Edit** – A screen that allows you to edit a selected user from the list :white_check_mark:
+* **Delete** – A screen that allows you to delete a selected user from the list :white_check_mark:
 
-Each of these screens should contain appropriate data validation, which is communicated to the end user.
+Each of these screens should contain appropriate data validation, which is communicated to the end user. :white_check_mark:
 
 ### 4. Data Logging (Advanced)
 
@@ -46,7 +46,7 @@ Make a significant architectural change that improves the application.
 Structurally, the user management application is very simple, and there are many ways it can be made more maintainable, scalable or testable.
 Some ideas are:
 * Re-implement the UI using a client side framework connecting to an API. Use of Blazor is preferred, but if you are more familiar with other frameworks, feel free to use them.
-* Update the data access layer to support asynchronous operations.
+* Update the data access layer to support asynchronous operations. :white_check_mark:
 * Implement authentication and login based on the users being stored.
 * Implement bundling of static assets.
 * Update the data access layer to use a real database, and implement database schema migrations.

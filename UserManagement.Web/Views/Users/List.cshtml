@@ -2,6 +2,14 @@
 
 <h2>User List</h2>
 
+@if (TempData["UserSuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["UserSuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
 <div class="table-responsive">
     <table class="table table-striped">
         <thead>
@@ -29,7 +37,7 @@
                         @item.Surname
                     </td>
                     <td>
-                        @item.DateOfBirth.ToString()
+                        @item.DateOfBirth?.ToShortDateString()
                     </td>
                     <td>
                         @item.Email
@@ -43,9 +51,9 @@
                                 Actions
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="btnToggleActions">
-                                <li><a class="dropdown-item" href="#">View</a></li>
-                                <li><a class="dropdown-item" href="#">Edit</a></li>
-                                <li><a class="dropdown-item" href="#">Delete</a></li>
+                                <li><a class="dropdown-item" asp-controller="Users" asp-action="Details" asp-route-id="@item.Id">View</a></li>
+                                <li><a class="dropdown-item" asp-controller="Users" asp-action="Edit" asp-route-id="@item.Id">Edit</a></li>
+                                <li><a class="dropdown-item" asp-controller="Users" asp-action="Delete" asp-route-id="@item.Id">Delete</a></li>
                             </ul>
                         </div>
                     </td>
@@ -62,7 +70,7 @@
         <a asp-controller="Users" asp-action="List" asp-route-filter="nonactive" class="btn btn-danger">Non Active</a>
     </div>
 
-    <a href="#" class="btn btn-primary float-end">
+    <a asp-action="Create" class="btn btn-primary float-end">
         Add User
     </a>
 </div>
