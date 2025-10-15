@@ -1,18 +1,25 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
+using UserManagement.Data.Entities;
 using UserManagement.Models;
 
 namespace UserManagement.Data;
 
 public class DataContext : DbContext
 {
-    public DataContext() => Database.EnsureCreated();
+    public DataContext() { }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder options)
-        => options.UseInMemoryDatabase("UserManagement.Data.DataContext");
+    public DataContext(DbContextOptions<DataContext> options) : base(options)
+    {
+
+    }
 
     protected override void OnModelCreating(ModelBuilder model)
-        => model.Entity<User>().HasData(new[]
+    {
+        base.OnModelCreating(model);
+
+
+        model.Entity<User>().HasData(new[]
         {
             new User { Id = 1, Forename = "Peter", Surname = "Loew", Email = "ploew@example.com", DateOfBirth = DateTime.Parse("14/11/1960"), IsActive = true },
             new User { Id = 2, Forename = "Benjamin Franklin", Surname = "Gates", Email = "bfgates@example.com", DateOfBirth = DateTime.Parse("14/01/1940"), IsActive = true },
@@ -27,5 +34,11 @@ public class DataContext : DbContext
             new User { Id = 11, Forename = "Robin", Surname = "Feld", Email = "rfeld@example.com", DateOfBirth = DateTime.Parse("05/02/1989"), IsActive = true },
         });
 
-    public DbSet<User>? Users { get; set; }
+        model.Entity<UserActionLog>().Navigation(x => x.User).AutoInclude();
+    }
+
+
+
+    public virtual DbSet<User>? Users { get; set; }
+    public virtual DbSet<UserActionLog> UserActionLogs { get; set; }
 }

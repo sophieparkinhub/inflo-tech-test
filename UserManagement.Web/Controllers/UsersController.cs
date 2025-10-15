@@ -10,7 +10,12 @@ namespace UserManagement.WebMS.Controllers;
 public class UsersController : Controller
 {
     private readonly IUserService _userService;
-    public UsersController(IUserService userService) => _userService = userService;
+    private readonly IUserActionLogService _userActionLogService;
+    public UsersController(IUserService userService, IUserActionLogService userActionLogService)
+    {
+        _userService = userService;
+        _userActionLogService = userActionLogService;
+    }
 
     [HttpGet]
     public async Task<ViewResult> List(string filter, CancellationToken cancellationToken)
@@ -21,6 +26,7 @@ public class UsersController : Controller
             "nonactive" => await _userService.FilterByActive(false, cancellationToken),
             _ => await _userService.GetAll(cancellationToken),
         };
+
         var items = users.Select(ConvertDtoToUserViewModel);
 
         var model = new UserListViewModel
@@ -32,7 +38,7 @@ public class UsersController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Details(long id)
+    public async Task<IActionResult> Details(long id, CancellationToken cancellationToken)
     {
 
         var user = await _userService.GetById(id);
@@ -41,6 +47,9 @@ public class UsersController : Controller
             return NotFound();
 
         var userViewModel = ConvertDtoToUserViewModel(user);
+
+        var userLogs = await _userActionLogService.GetUserActionLogs(id, cancellationToken);
+        userViewModel.Logs = userLogs?.ToList() ?? [];
 
         return View(userViewModel);
     }

@@ -46,6 +46,47 @@
             @Html.DisplayFor(model => model.IsActive)
         </dd>
     </dl>
+
+    <h3>Logs</h3>
+
+    @if (Model.Logs.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Action</th>
+                        <th>Changed Values</th>
+                        <th>Actioned By</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var log in Model.Logs)
+                    {
+                        <tr>
+                            <td>
+                                @log.Action
+                            </td>
+                            <td class="bg-info text-white">
+                                @log.ChangedValues
+                            </td>
+                            <td>
+                                @log.ActionedBy
+                            </td>
+                            <td>
+                                @log.Timestamp.ToShortDateString()
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <p>No actions logged.</p>
+    }
 </div>
 <div>
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |

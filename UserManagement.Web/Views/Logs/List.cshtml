@@ -1,0 +1,81 @@
+﻿@using UserManagement.Data.Entities
+@model UserManagement.Web.Models.Logs.LogsListViewModel
+
+<h2>Log List</h2>
+
+@if(Model.Items.Any()){
+
+    <div class="row my-3">
+        <div class="col-12">
+            <input id="tableFilter" type="text" class="form-control form-control-lg" placeholder="Filter results by all fields...">
+        </div>
+    </div>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>User</th>
+                <th>Action</th>
+                <th>Actioned By</th>
+                <th>Timestamp</th>
+                <th style="width: 1px;"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {            
+                <tr>
+                    <td>
+                        @item.Id
+                    </td>
+                    <td>
+                        <a asp-controller="Users" asp-action="Details" asp-route-id="@item.UserId" target="_blank" class="btn btn-link">@item.UserFullname</a>
+                    </td>
+                    <td class="@(item.Action == UserAction.Create ? "bg-success text-white" : "bg-warning text-white")">
+                        @item.Action.ToString()
+                    </td>
+                    <td>
+                        @item.ActionedBy
+                    </td>
+                    <td>
+                        @item.Timestamp.ToString()
+                    </td>
+                    <td>
+                        <a asp-controller="Logs" asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">View</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning my-3">
+        <h5>No actions logged.</h5>
+    </div>
+}
+
+<div>
+    <div class="btn-group" role="group">
+        <a asp-controller="Logs" asp-action="List" asp-route-filter="" class="btn btn-default">Show All</a>
+        <a asp-controller="Logs" asp-action="List" asp-route-filter="Create" class="btn btn-success mx-2">Action Create</a>
+        <a asp-controller="Logs" asp-action="List" asp-route-filter="Update" class="btn btn-warning text-white">Action Update</a>
+    </div>
+</div>
+
+
+<script>
+
+    document.getElementById('tableFilter').addEventListener('keyup', function () {
+      const searchValue = this.value.toLowerCase();
+      const rows = document.querySelectorAll('tbody tr');
+
+      rows.forEach(row => {
+        const rowText = row.textContent.toLowerCase();
+        row.style.display = rowText.includes(searchValue) ? '' : 'none';
+      });
+    });
+</script>

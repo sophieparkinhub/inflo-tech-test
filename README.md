@@ -35,10 +35,10 @@ Each of these screens should contain appropriate data validation, which is commu
 ### 4. Data Logging (Advanced)
 
 Extend the system to capture log information regarding primary actions performed on each user in the app.
-* In the **View** screen there should be a list of all actions that have been performed against that user. 
-* There should be a new **Logs** page, containing a list of log entries across the application.
-* In the Logs page, the user should be able to click into each entry to see more detail about it.
-* In the Logs page, think about how you can provide a good user experience - even when there are many log entries.
+* In the **View** screen there should be a list of all actions that have been performed against that user. :white_check_mark:
+* There should be a new **Logs** page, containing a list of log entries across the application. :white_check_mark:
+* In the Logs page, the user should be able to click into each entry to see more detail about it. :white_check_mark:
+* In the Logs page, think about how you can provide a good user experience - even when there are many log entries. :white_check_mark:
 
 ### 5. Extend the Application (Expert)
 
@@ -49,7 +49,7 @@ Some ideas are:
 * Update the data access layer to support asynchronous operations. :white_check_mark:
 * Implement authentication and login based on the users being stored.
 * Implement bundling of static assets.
-* Update the data access layer to use a real database, and implement database schema migrations.
+* Update the data access layer to use a real database, and implement database schema migrations. :white_check_mark:
 
 ### 6. Future-Proof the Application (Platform)
 
@@ -63,3 +63,6 @@ Add additional layers to the application that will ensure that it is scaleable w
 
 * Please feel free to change or refactor any code that has been supplied within the solution and think about clean maintainable code and architecture when extending the project.
 * If any additional packages, tools or setup are required to run your completed version, please document these thoroughly.
+
+## Notes to run the system
+* Please check the appsettings before running the application. Ensure the DefaultConnection server matches your local server to ensure migrations run.

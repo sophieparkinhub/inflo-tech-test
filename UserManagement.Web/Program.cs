@@ -1,14 +1,16 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using UserManagement.Application.Extensions;
 using UserManagement.Infrastructure.Extensions;
+using UserManagement.Web;
 using Westwind.AspNetCore.Markdown;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services
-    .AddDataAccess()
+    .AddDataAccess(builder.Configuration.GetConnectionString("DefaultConnection")!)
     .AddInfrastructureLayer()
     .AddApplicationLayer()
     .AddDomainServices()
@@ -16,6 +18,8 @@ builder.Services
     .AddControllersWithViews();
 
 var app = builder.Build();
+
+app.MigrateDatabase();
 
 app.UseMarkdown();
 

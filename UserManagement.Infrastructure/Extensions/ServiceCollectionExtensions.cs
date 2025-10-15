@@ -6,5 +6,9 @@ namespace UserManagement.Infrastructure.Extensions;
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddInfrastructureLayer(this IServiceCollection services)
-        => services.AddScoped<IUserRepository, UserRepository>();
+    {
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IUserActionLogRepository, UserActionLogRepository>();
+        return services;
+    }
 }

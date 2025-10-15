@@ -6,6 +6,7 @@ using UserManagement.Application.Mapper;
 using UserManagement.Infrastructure.Interfaces;
 using UserManagement.Models;
 using UserManagement.Services.Domain.Implementations;
+using UserManagement.Services.Interfaces;
 
 namespace UserManagement.Data.Tests;
 
@@ -20,7 +21,7 @@ public class UserServiceTests
         var isActive = true;
 
         var users = _fixture.CreateMany<User>();
-        _userRepository.Setup(x => x.GetUsersByIsActiveFlag(isActive, _cancellationToken)).ReturnsAsync(users);
+        _userRepository.Setup(x => x.GetUsersByIsActiveFlagAsync(isActive, _cancellationToken)).ReturnsAsync(users);
 
         var userDtos = _fixture.CreateMany<UserDto>(3);
         _userMapper.Setup(x => x.MapEntitiesToDtoList(users)).Returns(userDtos);
@@ -30,7 +31,7 @@ public class UserServiceTests
 
         // Assert
         result.Should().BeEquivalentTo(userDtos);
-        _userRepository.Verify(x => x.GetUsersByIsActiveFlag(isActive, _cancellationToken), Times.Once);
+        _userRepository.Verify(x => x.GetUsersByIsActiveFlagAsync(isActive, _cancellationToken), Times.Once);
         _userMapper.Verify(x => x.MapEntitiesToDtoList(users), Times.Once); 
     }
 
@@ -111,6 +112,7 @@ public class UserServiceTests
         // Assert
         _userMapper.Verify(x => x.MapDtoToEntity(userDto), Times.Once);
         _userRepository.Verify(x => x.AddAsync(user, _cancellationToken), Times.Once);
+        _userActionLogService.Verify(x => x.LogAsync(user.Id, Entities.UserAction.Create, It.IsAny<string>(), _cancellationToken), Times.Once);
     }
 
     [Fact]
@@ -122,14 +124,18 @@ public class UserServiceTests
         var userDto = _fixture.Create<UserDto>();
 
         var user = _fixture.Create<User>();
+        _userRepository.Setup(x => x.GetUserByIdNoTrackingAsync(userDto.Id, _cancellationToken)).ReturnsAsync(user);
+
         _userMapper.Setup(x => x.MapDtoToEntity(userDto)).Returns(user);
 
         // Act
         await service.Update(userDto, _cancellationToken);
 
         // Assert
+        _userRepository.Verify(x => x.GetUserByIdNoTrackingAsync(userDto.Id, _cancellationToken), Times.Once);
         _userMapper.Verify(x => x.MapDtoToEntity(userDto), Times.Once);
         _userRepository.Verify(x => x.UpdateAsync(user, _cancellationToken), Times.Once);
+        _userActionLogService.Verify(x => x.LogAsync(user.Id, Entities.UserAction.Update, It.IsAny<string>(), _cancellationToken), Times.Once);
     }
 
     [Fact]
@@ -172,5 +178,6 @@ public class UserServiceTests
     private Fixture _fixture = new Fixture();
     private readonly Mock<IUserMapper> _userMapper = new();
     private readonly Mock<IUserRepository> _userRepository = new();
-    private UserService CreateService() => new(_userRepository.Object, _userMapper.Object);
+    private readonly Mock<IUserActionLogService> _userActionLogService = new();
+    private UserService CreateService() => new(_userRepository.Object, _userActionLogService.Object, _userMapper.Object);
 }

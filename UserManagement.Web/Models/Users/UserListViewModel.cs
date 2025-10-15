@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using UserManagement.Data.Entities;
 
 namespace UserManagement.Web.Models.Users;
 
@@ -23,4 +24,6 @@ public class UserListItemViewModel
     public DateTime? DateOfBirth { get; set; }
     [Display(Name = "Is Active")]
     public bool IsActive { get; set; }
+
+    public List<UserActionLog> Logs = new ();
 }
