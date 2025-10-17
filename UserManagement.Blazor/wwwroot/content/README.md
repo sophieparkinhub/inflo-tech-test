@@ -70,3 +70,4 @@ Add additional layers to the application that will ensure that it is scaleable w
 ## Packages added
 * Added Markdig as an alternative to Westwind markdown as it supported blazor webassembly.
 * Added Mudblazor as it has reusable stylish components that can be customised to tailor your business.
+* Added fluentvalidator for form validation.
