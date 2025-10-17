@@ -1,0 +1,63 @@
+﻿@page "/logs/list"
+@inject HttpClient Http
+@using System.Net.Http.Json
+@using static MudBlazor.CategoryTypes
+
+<PageTitle>User logs</PageTitle>
+
+<MudTable Items="@userLogs" Bordered="true" Filter="new Func<UserLogItemViewModel, bool>(FilterFunc1)">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">User logs</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<UserLogItemViewModel, object?>(x => x.UserFullname)">User</MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<UserLogItemViewModel, object>(x => x.Action)">Action</MudTableSortLabel>
+        </MudTh>
+        <MudTh>Actioned By</MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<UserLogItemViewModel, object>(x => x.Timestamp)">Timestamp</MudTableSortLabel>
+        </MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>@context.Id</MudTd>
+        <MudTd>@context.UserFullname</MudTd>
+        <MudTd>@context.Action</MudTd>
+        <MudTd>@context.ActionedBy</MudTd>
+        <MudTd>@context.Timestamp</MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+@code {
+    private UserLogItemViewModel[]? userLogs;
+    private string searchString = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        userLogs = await Http.GetFromJsonAsync<UserLogItemViewModel[]?>("api/logs/get-list");
+    }
+
+    private bool FilterFunc1(UserLogItemViewModel item) => FilterFunc(item, searchString);
+
+    private bool FilterFunc(UserLogItemViewModel item, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (!string.IsNullOrEmpty(item.UserFullname) && item.UserFullname.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (item.Action.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (item.Timestamp.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+
+            return true;
+        return false;
+    }
+}

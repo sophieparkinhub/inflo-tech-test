@@ -1,0 +1,98 @@
+﻿@page "/users/list"
+@using UserManagement.Blazor.Pages.Users.Shared
+@inject IDialogService DialogService
+@inject HttpClient Http
+
+<PageTitle>Users</PageTitle>
+
+<MudTable Items="@users" Bordered="true" Filter="new Func<UserViewModel, bool>(FilterFunc1)">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">User logs</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<UserViewModel, object?>(x => x.Forename)">Forename</MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<UserViewModel, object?>(x => x.Surname)">Surname</MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<UserViewModel, object?>(x => x.DateOfBirth)">Date of Birth</MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<UserViewModel, object?>(x => x.Email)">Email</MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<UserViewModel, object?>(x => x.IsActive)">Is Active</MudTableSortLabel>
+        </MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>@context.Id</MudTd>
+        <MudTd>@context.Forename</MudTd>
+        <MudTd>@context.Surname</MudTd>
+        <MudTd>@context.DateOfBirth?.ToShortDateString()</MudTd>
+        <MudTd>@context.Email</MudTd>
+        <MudTd>@context.IsActive</MudTd>
+        <MudTd> <MudButton Size="Size.Small" Color="Color.Error" StartIcon="@Icons.Material.Filled.Delete" OnClick="() => OpenDeleteUserDialogAsync(context)"></MudButton></MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+@code {
+    private UserViewModel[]? users;
+    private string searchString = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUsers();
+    }
+
+    private async Task LoadUsers()
+    {
+        users = await Http.GetFromJsonAsync<UserViewModel[]?>("api/users/get-list");
+    }
+    private bool FilterFunc1(UserViewModel item) => FilterFunc(item, searchString);
+
+    private bool FilterFunc(UserViewModel item, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (!string.IsNullOrEmpty(item.Forename) && item.Forename.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (!string.IsNullOrEmpty(item.Surname) && item.Surname.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (!string.IsNullOrEmpty(item.Email) && item.Email.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (item.DateOfBirth.HasValue && item.DateOfBirth.Value.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    }
+
+    private async Task OpenDeleteUserDialogAsync(UserViewModel user)
+    {
+        var parameters = new DialogParameters<DeleteDialog>
+        {
+            { x => x.UserId, user.Id},
+            { x => x.ContentText, $"Do you really want to delete user {user.Forename} {user.Surname}? This process cannot be undone." },
+            { x => x.ButtonText, "Delete" },
+            { x => x.Color, Color.Error }
+        };
+
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete Dialog", parameters, options);
+
+        var result = await dialog.Result;
+
+        var isCancelled = result?.Canceled;
+
+        await LoadUsers();
+    }
+}

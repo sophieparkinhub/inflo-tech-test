@@ -1,0 +1,103 @@
+﻿@using FluentValidation
+
+<MudCard>
+    <MudForm Model="@Model" @ref="@form" Validation="@(UserValidator.ValidateValue)" ValidationDelay="0">
+        <MudCardContent>
+            @if (IsEdit)
+            {
+                <MudTextField @bind-Value="Model.Id"
+                              For="@(() => Model.Id)"
+                              Immediate="true"
+                              Disabled="true"
+                              Label="Id" />
+            }
+
+            <MudTextField @bind-Value="Model.Forename"
+                          For="@(() => Model.Forename)"
+                          Immediate="true"
+                          Label="Forename" />
+
+            <MudTextField @bind-Value="Model.Surname"
+                          For="@(() => Model.Surname)"
+                          Immediate="true"
+                          Label="Surname" />
+
+            <MudDatePicker @bind-Date="Model.DateOfBirth"
+                          For="@(() => Model.DateOfBirth)"
+                          Label="Date of Birth" />
+
+            <MudTextField @bind-Value="Model.Email"
+                          For="@(() => Model.Email)"
+                          Immediate="true"
+                          Label="Email" />
+
+            <MudCheckBox @bind-Value="Model.IsActive"
+                          For="@(() => Model.IsActive)"
+                          Label="Is Active" />
+
+        </MudCardContent>
+    </MudForm>
+    <MudCardActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@(async () => await Submit())">@(IsEdit ? "Update" : "Create")</MudButton>
+    </MudCardActions>
+</MudCard>
+@code {
+    [Parameter]
+    public UserViewModel Model { get; set; } = new UserViewModel();
+
+    [Parameter]
+    public bool IsEdit { get; set; }
+
+    [Parameter]
+    public EventCallback<UserViewModel> OnValidSubmit { get; set; }
+
+    MudForm? form;
+
+    UserViewModelFluentValidator UserValidator = new UserViewModelFluentValidator();
+
+    private async Task Submit()
+    {
+        await form!.Validate();
+
+        if (form.IsValid)
+        {
+            await OnValidSubmit.InvokeAsync(Model);
+        }
+    }
+
+
+    /// <summary>
+    /// A standard AbstractValidator for the Collection Object
+    /// </summary>
+    /// <typeparam name="OrderDetailsModel"></typeparam>
+    public class UserViewModelFluentValidator : AbstractValidator<UserViewModel>
+    {
+        public UserViewModelFluentValidator()
+        {
+            RuleFor(x => x.Forename)
+                .NotEmpty();
+
+
+            RuleFor(x => x.Surname)
+               .NotEmpty();
+
+            RuleFor(x => x.Email)
+              .NotEmpty()
+              .EmailAddress();
+
+            RuleFor(x => x.DateOfBirth)
+             .NotNull()
+             .LessThan(DateTime.Today);
+
+        }
+
+        public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (Model, propertyName) =>
+        {
+            var result = await ValidateAsync(ValidationContext<UserViewModel>.CreateWithOptions((UserViewModel)Model, x => x.IncludeProperties(propertyName)));
+            if (result.IsValid)
+                return Array.Empty<string>();
+            return result.Errors.Select(e => e.ErrorMessage);
+        };
+    }
+}
+

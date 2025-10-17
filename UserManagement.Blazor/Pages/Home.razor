@@ -1,0 +1,24 @@
+﻿@page "/"
+@inject NavigationManager Navigation
+
+<PageTitle>Home</PageTitle>
+
+<MudPaper Height="100$" Width="100%">
+    <MudContainer MaxWidth="MaxWidth.Medium">
+        <div>@((MarkupString)HtmlContent)</div>
+    </MudContainer>
+</MudPaper>
+
+@code{
+    private string HtmlContent = string.Empty;
+
+    private HttpClient StaticClient = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        StaticClient = new HttpClient { BaseAddress = new Uri(Navigation.BaseUri) };
+        var markdown = await StaticClient.GetStringAsync("content/README.md");
+        HtmlContent = Markdig.Markdown.ToHtml(markdown);
+        await base.OnInitializedAsync();
+    }
+}

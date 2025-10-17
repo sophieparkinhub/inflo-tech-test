@@ -1,0 +1,43 @@
+﻿@using System.Net
+@inject HttpClient Http
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <DialogContent>
+        <MudText>@ContentText</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="@Color" Variant="Variant.Filled" OnClick="Submit">@ButtonText</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+
+    [CascadingParameter]
+    public required IMudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public required long UserId { get; set; }
+
+    [Parameter]
+    public required string ContentText { get; set; }
+
+    [Parameter]
+    public required string ButtonText { get; set; }
+
+    [Parameter]
+    public Color Color { get; set; }
+
+    private async void Submit(){
+        var response = await Http.DeleteAsync($"api/users/{UserId}");
+
+        if (response.StatusCode == HttpStatusCode.OK)
+            Snackbar.Add("Successfully deleted user!", Severity.Success);
+        else
+            Snackbar.Add($"Failed to delete user id {UserId}", Severity.Error);
+
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}

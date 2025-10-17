@@ -1,0 +1,26 @@
+﻿@page "/users/create"
+@using UserManagement.Blazor.Pages.Users.Shared
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+
+<UserForm IsEdit="false" OnValidSubmit="OnSubmit"></UserForm>
+
+@code {
+
+    public async void OnSubmit(UserViewModel model)
+    {
+        var response = await Http.PostAsJsonAsync<UserViewModel>("api/users", model);
+
+        if (response.IsSuccessStatusCode)
+        {
+            Snackbar.Add($"Successfully created user for {model.Forename} {model.Surname}", Severity.Success);
+            Navigation.NavigateTo("/users/list");
+
+        }
+        else
+        {
+            Snackbar.Add($"Failed to create user for {model.Forename} {model.Surname}", Severity.Error);
+        }
+    }
+};
