@@ -66,6 +66,7 @@ Add additional layers to the application that will ensure that it is scaleable w
 
 ## Notes to run the system
 * Please check the appsettings before running the application. Ensure the DefaultConnection server matches your local server to ensure migrations run.
+* When running blazor app ensure select multiple start up including the blazor app and api.
 
 ## Packages added
 * Added Markdig as an alternative to Westwind markdown as it supported blazor webassembly.
