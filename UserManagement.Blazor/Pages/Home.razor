@@ -3,11 +3,7 @@
 
 <PageTitle>Home</PageTitle>
 
-<MudPaper Height="100$" Width="100%">
-    <MudContainer MaxWidth="MaxWidth.Medium">
-        <div>@((MarkupString)HtmlContent)</div>
-    </MudContainer>
-</MudPaper>
+<div>@((MarkupString)HtmlContent)</div>
 
 @code{
     private string HtmlContent = string.Empty;

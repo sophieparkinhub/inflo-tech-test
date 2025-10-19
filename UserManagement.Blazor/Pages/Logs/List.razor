@@ -20,6 +20,7 @@
             <MudTableSortLabel SortBy="new Func<UserLogItemViewModel, object>(x => x.Action)">Action</MudTableSortLabel>
         </MudTh>
         <MudTh>Actioned By</MudTh>
+        <MudTh>Changed Values</MudTh>
         <MudTh>
             <MudTableSortLabel SortBy="new Func<UserLogItemViewModel, object>(x => x.Timestamp)">Timestamp</MudTableSortLabel>
         </MudTh>
@@ -29,6 +30,7 @@
         <MudTd>@context.UserFullname</MudTd>
         <MudTd>@context.Action</MudTd>
         <MudTd>@context.ActionedBy</MudTd>
+        <MudTd Class="blue darken-1 shades-text" Style="color:#fff!important">@context.ChangedValues</MudTd>
         <MudTd>@context.Timestamp</MudTd>
     </RowTemplate>
     <PagerContent>
